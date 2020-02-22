@@ -69,6 +69,7 @@ steps:
     image: node:12.16.1
     commands:
       - cd frontend
+      - npm i
       - npm run build
   - name: publish
     image: plugins/github-release
