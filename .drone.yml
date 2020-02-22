@@ -71,15 +71,20 @@ steps:
       - cd frontend
       - npm i
       - npm run build
+  - name: compress build
+    image: alpine:3
+    commands:
+      - cd frontend
+      - tar -zcvf frontend-build.tar.gz build
   - name: publish
     image: plugins/github-release
     settings:
       api_key:
         from_secret: github_api_key
-      files: frontend/build
+      files: frontend/frontend-build.tar.gz
     when:
       event:
-      - tag 
+      - tag
 
 ---
 kind: pipeline
