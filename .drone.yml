@@ -76,6 +76,9 @@ steps:
     commands:
       - cd frontend
       - tar -zcvf frontend-build.tar.gz build
+    when:
+      event:
+      - tag
   - name: publish
     image: plugins/github-release
     settings:
