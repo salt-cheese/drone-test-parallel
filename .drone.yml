@@ -105,6 +105,7 @@ steps:
 depends_on:
   - Build-Backend-1
   - Build-Backend-2
+  - Build-Frontend
 
 trigger:
   status:
