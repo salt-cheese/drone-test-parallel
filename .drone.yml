@@ -23,6 +23,7 @@ trigger:
       - backend/consumer-server/**
   branch:
     - master
+    - develop
   event:
     - pull_request
     - push
@@ -54,6 +55,7 @@ trigger:
       - backend/consumer-server/**
   branch:
     - master
+    - develop
   event:
     - pull_request
     - push
@@ -88,6 +90,17 @@ steps:
     when:
       event:
       - tag
+trigger:
+  changeset:
+    includes:
+      - frontend/**
+  branch:
+    - master
+    - develop
+  event:
+    - pull_request
+    - push
+    - tag
 
 ---
 kind: pipeline
