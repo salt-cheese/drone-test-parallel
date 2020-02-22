@@ -1,0 +1,112 @@
+kind: pipeline
+type: docker
+name: Build-Backend-1
+
+steps:
+  - name: build
+    image: openjdk:8-jdk
+    commands:
+      - cd backend
+      - ./gradlew producer-server:build --profile --full-stacktrace
+  - name: publish
+    image: plugins/github-release
+    settings:
+      api_key:
+        from_secret: github_api_key
+      files: backend/producer-server/build/libs/*.jar
+    when:
+      event:
+      - tag
+trigger:
+  changeset:
+    includes:
+      - backend/consumer-server/**
+  branch:
+    - master
+  event:
+    - pull_request
+    - push
+    - tag
+
+---
+kind: pipeline
+type: docker
+name: Build-Backend-2
+
+steps:
+  - name: build
+    image: openjdk:8-jdk
+    commands:
+      - cd backend
+      - ./gradlew consumer-server:build --profile --full-stacktrace
+  - name: publish
+    image: plugins/github-release
+    settings:
+      api_key:
+        from_secret: github_api_key
+      files: backend/consumer-server/build/libs/*.jar
+    when:
+      event:
+      - tag
+trigger:
+  changeset:
+    includes:
+      - backend/consumer-server/**
+  branch:
+    - master
+  event:
+    - pull_request
+    - push
+    - tag
+
+---
+kind: pipeline
+type: docker
+name: Build-Frontend
+
+steps:
+  - name: build
+    image: node:12.16.1
+    commands:
+      - cd frontend
+      - npm run build
+  - name: publish
+    image: plugins/github-release
+    settings:
+      api_key:
+        from_secret: github_api_key
+      files: frontend/build
+    when:
+      event:
+      - tag 
+
+---
+kind: pipeline
+name: Notification
+
+clone:
+  disable: true
+
+steps:
+  - name: slack
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel: nofitication
+      template: >
+        {{#success build.status}}
+          :smile: Build #{{build.number}} of `{{repo.name}}` succeeded.
+          :globe_with_meridians: {{ build.link }}
+        {{else}}
+          :cry: Build #{{build.number}} of `{{repo.name}}` failed.
+          :globe_with_meridians: {{ build.link }}
+        {{/success}}
+depends_on:
+  - Build-Backend-1
+  - Build-Backend-2
+
+trigger:
+  status:
+    - success
+    - failure

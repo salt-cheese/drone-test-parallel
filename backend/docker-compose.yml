@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  db:
+    image: mariadb:10.1
+    volumes:
+      - ./data/var/lib/mysql:/var/lib/mysql:rw,Z
+    env_file:
+      - db-secret.env
+    ports:
+      - 3306:3306
+    networks:
+      - apps
+  adminer:
+    image: adminer
+    ports:
+      - 9000:8080
+    networks:
+      - apps
+
+networks: 
+  apps:
+    driver: bridge

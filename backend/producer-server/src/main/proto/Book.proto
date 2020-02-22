@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.example.rpc.book";
+
+package book;
+
+service BookService {
+    rpc findAll(google.protobuf.Empty) returns (BookMessageList);
+    rpc findBookByQuery(BookMessage) returns (BookMessageList);
+    rpc addBook(BookMessage) returns (BookMessage);
+    rpc streamAll(google.protobuf.Empty) returns (stream BookMessageList);
+}
+
+message BookMessage {
+    string title = 1;
+    string author = 2;
+    string isbn = 3;
+    string category = 4;
+}
+
+message BookMessageList {
+    repeated BookMessage book = 1;
+}
