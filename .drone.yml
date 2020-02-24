@@ -19,7 +19,6 @@ steps:
       - tag
 trigger:
   changeset:
-    includes:
       - backend/consumer-server/**
   branch:
     - master
@@ -51,7 +50,6 @@ steps:
       - tag
 trigger:
   changeset:
-    includes:
       - backend/consumer-server/**
   branch:
     - master
@@ -92,7 +90,6 @@ steps:
       - tag
 trigger:
   changeset:
-    includes:
       - frontend/**
   branch:
     - master
